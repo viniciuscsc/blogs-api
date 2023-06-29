@@ -1,19 +1,15 @@
 const userService = require('../services/user.service');
 
-const errorMap = {
-  INVALID_INPUT: 400,
-  INVALID_EMAIL: 409,
+const login = async (req, res) => {
+  const loginData = req.body;
+
+  const { statusCode, message } = await userService.login(loginData);
+
+  if (statusCode) return res.status(statusCode).json({ message });
+
+  return res.status(200).json({ token: message });
 };
 
-const createUser = async (req, res) => {
-  const userData = req.body;
-
-  const { type, message } = await userService.createUser(userData);
-
-  if (type) return res.status(errorMap[type]).json({ message });
-
-  return res.status(201).json({ token: message });
-};
 module.exports = {
-  createUser,
+  login,
 };

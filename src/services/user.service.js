@@ -1,35 +1,29 @@
 const { User } = require('../models');
-const { createToken } = require('../utils/JWT');
 
 const {
-  validateDisplayName,
-  validateEmail,
-  validatePassword,
-} = require('./validations/inputValuesValidation');
+  requiredFieldsValidation,
+  existingUserValidation,
+} = require('./validations/loginInputValidation');
 
-const createUser = async (userData) => {
-  const { displayName, email, password } = userData;
+const { createToken } = require('../utils/JWT');
 
-  const displayNameError = validateDisplayName(displayName);
-  console.log(displayNameError);
-  if (displayNameError.type) return displayNameError;
+const login = async (loginData) => {
+  const requiredFieldsError = requiredFieldsValidation(loginData);
+  if (requiredFieldsError.statusCode) return requiredFieldsError;
 
-  const emailError = await validateEmail(email);
-  console.log(emailError);
-  if (emailError.type) return emailError;
+  const existingUserError = await existingUserValidation(loginData);
+  if (existingUserError.statusCode) return existingUserError;
 
-  const passwordError = validatePassword(password);
-  console.log(passwordError);
-  if (passwordError.type) return passwordError;
-  
-  const newUser = User.create(userData);
-  
-  const payload = { id: newUser.id };
-  const token = createToken(payload);
-  
-  return { type: null, message: token };
+  const { email } = loginData;
+  const user = await User.findOne({ where: { email } });
+
+  delete user.dataValues.password;
+
+  const token = createToken(user.dataValues);
+
+  return { statusCode: null, message: token };
 };
 
 module.exports = {
-  createUser,
+  login,
 };
