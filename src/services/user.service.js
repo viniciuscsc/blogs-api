@@ -1,20 +1,27 @@
 const { User } = require('../models');
 
-const {
-  requiredFieldsValidation,
-  existingUserValidation,
-} = require('./validations/loginInputValidation');
-
 const { createToken } = require('../utils/JWT');
 
+const {
+  validateRequiredFields,
+  validateExistingUser,
+} = require('./validations/loginInputValidation');
+
+const {
+  validateDisplayName,
+  validateEmail,
+  validatePassword,
+} = require('./validations/createUserInputValidation');
+
 const login = async (loginData) => {
-  const requiredFieldsError = requiredFieldsValidation(loginData);
+  const { email, password } = loginData;
+
+  const requiredFieldsError = validateRequiredFields(email, password);
   if (requiredFieldsError.statusCode) return requiredFieldsError;
 
-  const existingUserError = await existingUserValidation(loginData);
+  const existingUserError = await validateExistingUser(email, password);
   if (existingUserError.statusCode) return existingUserError;
 
-  const { email } = loginData;
   const user = await User.findOne({ where: { email } });
 
   delete user.dataValues.password;
@@ -24,6 +31,28 @@ const login = async (loginData) => {
   return { statusCode: null, message: token };
 };
 
+const createUser = async (userData) => {
+  const { displayName, email, password } = userData;
+
+  const displayNameError = validateDisplayName(displayName);
+  if (displayNameError.statusCode) return displayNameError;
+
+  const emailError = await validateEmail(email);
+  if (emailError.statusCode) return emailError;
+
+  const passwordError = validatePassword(password);
+  if (passwordError.statusCode) return passwordError;
+
+  const user = await User.create(userData);
+
+  delete user.dataValues.password;
+
+  const token = createToken(user.dataValues);
+
+  return { statusCode: null, message: token }; 
+};
+
 module.exports = {
   login,
+  createUser,
 };

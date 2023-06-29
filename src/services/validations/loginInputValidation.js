@@ -1,8 +1,6 @@
 const { User } = require('../../models');
 
-const requiredFieldsValidation = (loginData) => {
-  const { email, password } = loginData;
-
+const validateRequiredFields = (email, password) => {
   if (!email || !password) {
     return { statusCode: 400, message: 'Some required fields are missing' };
   }
@@ -10,9 +8,7 @@ const requiredFieldsValidation = (loginData) => {
   return { statusCode: null, message: '' };
 };
 
-const existingUserValidation = async (loginData) => {
-  const { email, password } = loginData;
-
+const validateExistingUser = async (email, password) => {
   const user = await User.findOne({ where: { email } });
 
   if (!user || user.password !== password) {
@@ -23,6 +19,6 @@ const existingUserValidation = async (loginData) => {
 };
 
 module.exports = {
-  requiredFieldsValidation,
-  existingUserValidation,
+  validateRequiredFields,
+  validateExistingUser,
 };
