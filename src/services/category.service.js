@@ -13,6 +13,13 @@ const createCategory = async (categoryData) => {
   return { statusCode: null, message: category };
 };
 
+const getCategories = async () => {
+  const categories = await Category.findAll();
+
+  return { statusCode: null, message: categories };
+};
+
 module.exports = {
   createCategory,
+  getCategories,
 };
