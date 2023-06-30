@@ -52,7 +52,16 @@ const createUser = async (userData) => {
   return { statusCode: null, message: token }; 
 };
 
+const getUsers = async () => {
+  const users = await User.findAll({
+    attributes: ['id', 'displayName', 'email', 'image'],
+  });
+
+  return { statusCode: null, message: users };
+};
+
 module.exports = {
   login,
   createUser,
+  getUsers,
 };
