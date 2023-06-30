@@ -5,13 +5,14 @@ const { createToken } = require('../utils/JWT');
 const {
   validateRequiredFields,
   validateExistingUser,
-} = require('./validations/loginInputValidation');
+} = require('./validations/loginValidation');
 
 const {
   validateDisplayName,
   validateEmail,
   validatePassword,
-} = require('./validations/createUserInputValidation');
+  validateId,
+} = require('./validations/userValidation');
 
 const login = async (loginData) => {
   const { email, password } = loginData;
@@ -60,8 +61,20 @@ const getUsers = async () => {
   return { statusCode: null, message: users };
 };
 
+const getUserById = async (id) => {
+  const idError = await validateId(id);
+  if (idError.statusCode) return idError;
+
+  const user = await User.findByPk(id, {
+    attributes: ['id', 'displayName', 'email', 'image'],
+  });
+
+  return { statusCode: null, message: user };
+};
+
 module.exports = {
   login,
   createUser,
   getUsers,
+  getUserById,
 };

@@ -43,8 +43,17 @@ const validatePassword = (password) => {
   return { statusCode: null, message: '' };
 };
 
+const validateId = async (id) => {
+  const user = await User.findByPk(id);
+
+  if (!user) return { statusCode: 404, message: 'User does not exist' };
+
+  return { statusCode: null, message: '' };
+};
+
 module.exports = {
   validateDisplayName,
   validateEmail,
   validatePassword,
+  validateId,
 };
