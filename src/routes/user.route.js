@@ -2,7 +2,7 @@ const { Router } = require('express');
 
 const userController = require('../controllers/user.controller');
 
-const { validateToken } = require('../middlewares/tokenValidation');
+const { validateToken } = require('../middlewares/token.validation');
 
 const route = Router();
 

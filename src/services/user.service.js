@@ -5,14 +5,14 @@ const { createToken } = require('../utils/JWT');
 const {
   validateRequiredFields,
   validateExistingUser,
-} = require('./validations/loginValidation');
+} = require('./validations/login.validation');
 
 const {
   validateDisplayName,
   validateEmail,
   validatePassword,
   validateId,
-} = require('./validations/userValidation');
+} = require('./validations/user.validation');
 
 const login = async (loginData) => {
   const { email, password } = loginData;
