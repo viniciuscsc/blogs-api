@@ -72,7 +72,7 @@ const getUserById = async (id) => {
   return { statusCode: null, message: user };
 };
 
-const deleteUser = async (userId) => 
+const deleteUser = async (_userId) => 
   // await User.destroy({ where: { id: userId } });
 
    ({ statusCode: null, message: '' });
