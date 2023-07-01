@@ -3,7 +3,7 @@ const { User } = require('../models');
 const { createToken } = require('../utils/JWT');
 
 const {
-  validateRequiredFields,
+  validateLoginRequiredFields,
   validateExistingUser,
 } = require('./validations/login.validation');
 
@@ -17,7 +17,7 @@ const {
 const login = async (loginData) => {
   const { email, password } = loginData;
 
-  const requiredFieldsError = validateRequiredFields(email, password);
+  const requiredFieldsError = validateLoginRequiredFields(email, password);
   if (requiredFieldsError.statusCode) return requiredFieldsError;
 
   const existingUserError = await validateExistingUser(email, password);
