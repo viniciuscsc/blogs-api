@@ -4,6 +4,7 @@ const {
   validatePostRequiredFields,
   validateExistingCategoryIds,
   validateExistingPostId,
+  validateUpdatedPostRequiredFields,
 } = require('./validations/post.validation');
 
 const createPost = async (userId, postData) => {
@@ -35,16 +36,8 @@ const getPosts = async () => {
   const posts = await BlogPost.findAll({
     attributes: ['id', 'title', 'content', 'userId', 'published', 'updated'],
     include: [
-      {
-        model: User, 
-        as: 'user',
-        attributes: ['id', 'displayName', 'email', 'image'],
-      },
-      {
-        model: Category,
-        as: 'categories',
-        through: { attributes: [] },
-      },
+      { model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
+      { model: Category, as: 'categories', through: { attributes: [] } },
     ],
   });
 
@@ -58,20 +51,29 @@ const getPostById = async (postId) => {
   const post = await BlogPost.findByPk(postId, {
     attributes: ['id', 'title', 'content', 'userId', 'published', 'updated'],
     include: [
-      {
-        model: User, 
-        as: 'user',
-        attributes: ['id', 'displayName', 'email', 'image'],
-      },
-      {
-        model: Category,
-        as: 'categories',
-        through: { attributes: [] },
-      },
+      { model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
+      { model: Category, as: 'categories', through: { attributes: [] } },
     ],
   });
 
   return { statusCode: null, message: post };
+};
+
+const updatePost = async (postId, updatedPostData) => {
+  const requiredFieldsError = validateUpdatedPostRequiredFields(updatedPostData);
+  if (requiredFieldsError.statusCode) return requiredFieldsError;
+  
+  await BlogPost.update(updatedPostData, { where: { id: postId } });
+  
+  const updatedPost = await BlogPost.findByPk(postId, {
+    attributes: ['id', 'title', 'content', 'userId', 'published', 'updated'],
+    include: [
+      { model: User, as: 'user', attributes: ['id', 'displayName', 'email', 'image'] },
+      { model: Category, as: 'categories', through: { attributes: [] } },
+    ],
+  });
+
+  return { statusCode: null, message: updatedPost };
 };
 
 module.exports = {
@@ -79,4 +81,5 @@ module.exports = {
   createPostsCategories,
   getPosts,
   getPostById,
+  updatePost,
 };

@@ -33,8 +33,19 @@ const validateExistingPostId = async (postId) => {
   return { statusCode: null, message: '' }; 
 };
 
+const validateUpdatedPostRequiredFields = (updatedPostData) => {
+  const { title, content } = updatedPostData;
+
+  if (!title || !content) {
+    return { statusCode: 400, message: 'Some required fields are missing' };
+  }
+
+  return { statusCode: null, message: '' };
+};
+
 module.exports = {
   validatePostRequiredFields,
   validateExistingCategoryIds,
   validateExistingPostId,
+  validateUpdatedPostRequiredFields,
 };
