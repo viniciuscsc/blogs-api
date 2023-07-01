@@ -3,6 +3,7 @@ const { BlogPost, PostCategory, User, Category } = require('../models');
 const {
   validatePostRequiredFields,
   validateExistingCategoryIds,
+  validateExistingPostId,
 } = require('./validations/post.validation');
 
 const createPost = async (userId, postData) => {
@@ -50,8 +51,32 @@ const getPosts = async () => {
   return { statusCode: null, message: posts };
 };
 
+const getPostById = async (postId) => {
+  const postIdError = await validateExistingPostId(postId);
+  if (postIdError.statusCode) return postIdError;
+
+  const post = await BlogPost.findByPk(postId, {
+    attributes: ['id', 'title', 'content', 'userId', 'published', 'updated'],
+    include: [
+      {
+        model: User, 
+        as: 'user',
+        attributes: ['id', 'displayName', 'email', 'image'],
+      },
+      {
+        model: Category,
+        as: 'categories',
+        through: { attributes: [] },
+      },
+    ],
+  });
+
+  return { statusCode: null, message: post };
+};
+
 module.exports = {
   createPost,
   createPostsCategories,
   getPosts,
+  getPostById,
 };

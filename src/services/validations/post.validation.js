@@ -1,4 +1,4 @@
-const { Category } = require('../../models');
+const { Category, BlogPost } = require('../../models');
 
 const validatePostRequiredFields = (postData) => {
   const { title, content, categoryIds } = postData;
@@ -25,7 +25,16 @@ const validateExistingCategoryIds = async (categoryIds) => {
   return { statusCode: null, message: '' }; 
 };
 
+const validateExistingPostId = async (postId) => {
+  const post = await BlogPost.findByPk(postId);
+
+  if (!post) return { statusCode: 404, message: 'Post does not exist' };
+
+  return { statusCode: null, message: '' }; 
+};
+
 module.exports = {
   validatePostRequiredFields,
   validateExistingCategoryIds,
+  validateExistingPostId,
 };
