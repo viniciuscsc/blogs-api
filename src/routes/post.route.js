@@ -11,5 +11,6 @@ route.post('/post', validateToken, postController.createPost);
 route.get('/post', validateToken, postController.getPosts);
 route.get('/post/:id', validateToken, postController.getPostById);
 route.put('/post/:id', validateToken, validateOwnerPost, postController.updatePost);
+route.delete('/post/:id', validateToken, validateOwnerPost, postController.deletePost);
 
 module.exports = route;
