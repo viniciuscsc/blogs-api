@@ -1,4 +1,4 @@
-const { BlogPost, PostCategory } = require('../models');
+const { BlogPost, PostCategory, User, Category } = require('../models');
 
 const {
   validatePostRequiredFields,
@@ -30,7 +30,28 @@ const createPostsCategories = async (postId, postData) => {
   await Promise.all(categories);
 };
 
+const getPosts = async () => {
+  const posts = await BlogPost.findAll({
+    attributes: ['id', 'title', 'content', 'userId', 'published', 'updated'],
+    include: [
+      {
+        model: User, 
+        as: 'user',
+        attributes: ['id', 'displayName', 'email', 'image'],
+      },
+      {
+        model: Category,
+        as: 'categories',
+        through: { attributes: [] },
+      },
+    ],
+  });
+
+  return { statusCode: null, message: posts };
+};
+
 module.exports = {
   createPost,
   createPostsCategories,
+  getPosts,
 };

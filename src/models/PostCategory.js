@@ -25,6 +25,7 @@ module.exports = (sequelize, DataTypes) => {
       {
         through: postCategoryTable,
         foreignKey: 'category_id',
+        as: 'blogPosts',
         otherKey: 'post_id',
       });
 
@@ -32,6 +33,7 @@ module.exports = (sequelize, DataTypes) => {
       {
         through: postCategoryTable,
         foreignKey: 'post_id',
+        as: 'categories',
         otherKey: 'category_id',
       });
   };
