@@ -72,9 +72,14 @@ const getUserById = async (id) => {
   return { statusCode: null, message: user };
 };
 
+const deleteUser = async (userId) => 
+  // await User.destroy({ where: { id: userId } });
+
+   ({ statusCode: null, message: '' });
 module.exports = {
   login,
   createUser,
   getUsers,
   getUserById,
+  deleteUser,
 };
